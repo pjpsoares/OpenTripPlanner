@@ -12,21 +12,21 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package org.opentripplanner.api.resource;
 
+import com.google.common.collect.Lists;
 import org.glassfish.grizzly.http.server.Request;
-import org.onebusaway.gtfs.model.AgencyAndId;
 import org.opentripplanner.api.common.RoutingResource;
-import org.opentripplanner.api.model.Itinerary;
 import org.opentripplanner.api.model.TripPlan;
 import org.opentripplanner.api.model.error.PlannerError;
 import org.opentripplanner.routing.core.RoutingRequest;
 import org.opentripplanner.routing.impl.GraphPathFinder;
 import org.opentripplanner.routing.spt.GraphPath;
-import org.opentripplanner.standalone.OTPServer;
 import org.opentripplanner.standalone.Router;
+import org.opentripplanner.util.pod.PODService;
+import org.opentripplanner.util.uber.UberItinerary;
+import org.opentripplanner.util.uber.UberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -34,12 +34,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.opentripplanner.api.resource.ServerInfo.Q;
 
@@ -88,6 +86,12 @@ public class PlannerResource extends RoutingResource {
 
             /* Convert the internal GraphPaths to a TripPlan object that is included in an OTP web service Response. */
             TripPlan plan = GraphPathToTripPlanConverter.generatePlan(paths, request);
+
+            UberItinerary itinerary = new UberService().getEstimate(request.from, request.to);
+            if (itinerary != null) {
+                plan.extra = Lists.newArrayList(itinerary);
+            }
+
             response.setPlan(plan);
 
         } catch (Exception e) {
@@ -108,6 +112,9 @@ public class PlannerResource extends RoutingResource {
         response.elevationMetadata = new ElevationMetadata();
         response.elevationMetadata.ellipsoidToGeoidDifference = router.graph.ellipsoidToGeoidDifference;
         response.elevationMetadata.geoidElevation = request.geoidElevation;
+
+//        new PODService().getAvailableRides(request.from, request.to);
+
 
         /* Log this request if such logging is enabled. */
         if (request != null && router != null && router.requestLogger != null) {

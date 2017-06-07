@@ -430,6 +430,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.1</version>
+        </dependency>
         <!-- Amazon AWS client libraries -->
         <dependency>
             <groupId>com.amazonaws</groupId>

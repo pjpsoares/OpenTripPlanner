@@ -20,6 +20,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.opentripplanner.util.uber.UberItinerary;
 
 /**
  * A TripPlan is a set of ways to get from point A to point B at time T.
@@ -39,6 +40,10 @@ public class TripPlan {
     @XmlElementWrapper(name="itineraries") //TODO: why don't we just change the variable name?
     @JsonProperty(value="itineraries")
     public List<Itinerary> itinerary = new ArrayList<Itinerary>();
+
+    @XmlElementWrapper(name="extra") //TODO: why don't we just change the variable name?
+    @JsonProperty(value="extra")
+    public List<UberItinerary> extra = new ArrayList<>();
 
     public TripPlan() { }
 
