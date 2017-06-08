@@ -7,7 +7,9 @@ public enum TicketType {
     DART_LOCAL(2.5),
     DART_REGIONAL(5),
     THE_T_REGIONAL(5),
-    THE_T_LOCAL(1.75);
+    THE_T_LOCAL(1.75),
+    POD_ONLY(6),
+    POD_COMBINED(7.5);
 
     public double value;
 

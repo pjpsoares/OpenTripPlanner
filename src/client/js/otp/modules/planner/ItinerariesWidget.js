@@ -340,6 +340,8 @@ otp.widgets.ItinerariesWidget =
         if(mode === "BUS") return '#0f0';
         if(mode === "TRAM") return '#f00';
         if(mode === "AIRPLANE") return '#f0f';
+        if(mode === "UBER") return '#ff6e8c';
+        if(mode === "POD") return '#0006ff';
         return '#aaa';
     },
 
@@ -380,7 +382,7 @@ otp.widgets.ItinerariesWidget =
                 }
             }
 
-            if(leg.mode === "WALK" || leg.mode === "BICYCLE" || leg.mode === "CAR") {
+            if(leg.mode === "WALK" || leg.mode === "BICYCLE" || leg.mode === "CAR" || leg.mode === "POD" || leg.mode === "UBER") {
                 headerHtml += " "+otp.util.Itin.distanceString(leg.distance)+ pgettext("direction", " to ")+otp.util.Itin.getName(leg.to);
                 if(otp.config.municoderHostname) {
                     var spanId = this.newMunicoderRequest(leg.to.lat, leg.to.lon);

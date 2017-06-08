@@ -307,11 +307,18 @@ public class PlannerResource extends RoutingResource {
 
     public TicketType getTicketType(Itinerary itinerary) {
         List<PublicTransportationCompany> agencies = new ArrayList<>();
+        boolean hasPOD = false;
 
         for (Leg leg : itinerary.legs) {
             if (leg.agencyId != null) {
                 agencies.add(getTransportCompany(leg.route));
+            } else if (leg.mode == "POD") {
+                hasPOD = true;
             }
+        }
+
+        if (hasPOD) {
+            return agencies.size() > 0 ? TicketType.POD_COMBINED : TicketType.POD_ONLY;
         }
 
         if (agencies.size() == 0) {
