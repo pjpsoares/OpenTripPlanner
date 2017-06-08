@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
+import org.opentripplanner.api.resource.TicketType;
 import org.opentripplanner.routing.core.Fare;
 
 /**
@@ -102,6 +103,10 @@ public class Itinerary {
      * itineraries with a good slope). 
      */
     public boolean tooSloped = false;
+    public TicketType ticketType;
+
+    public double minPrice;
+    public double maxPrice;
 
     /** 
      * adds leg to array list
@@ -157,5 +162,9 @@ public class Itinerary {
             calendar.setTime(endTime.getTime());
             endTime = calendar;
         }
+    }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
     }
 }

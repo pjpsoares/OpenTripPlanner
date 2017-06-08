@@ -9,8 +9,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.opentripplanner.api.model.Place;
 import org.opentripplanner.common.model.GenericLocation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +22,17 @@ import java.util.Map;
  */
 public class PODService {
 
-    private static final String RIDE_REQUEST_ENDPOINT = "https://dart.tapridemobile.com/api/v1/passenger/request";
+    private static final String RIDE_REQUEST_ENDPOINT = "https://dart.tapridemobile.com/api/v1/passenger/estimate";
 
-    public void getAvailableRides(GenericLocation from, GenericLocation to) {
+    public PODResponse getAvailableRides(GenericLocation from, GenericLocation to) {
+        return getAvailableRides(from.lat, from.lng, to.lat, to.lng);
+    }
+
+    public PODResponse getAvailableRides(Place from, Place to) {
+        return getAvailableRides(from.lat, from.lon, to.lat, to.lon);
+    }
+
+    public PODResponse getAvailableRides(Double fromLat, Double fromLng, Double toLat, Double toLng) {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(RIDE_REQUEST_ENDPOINT);
 
@@ -30,21 +40,27 @@ public class PODService {
             List<NameValuePair> formparams = new ArrayList<>();
             formparams.add(new BasicNameValuePair("username", "pjp.soares@gmail.com"));
             formparams.add(new BasicNameValuePair("key", "HLR/NjCPFfQhzs7J9w3CPC7wmNF66fpJI4EL4GjzKN0="));
-            formparams.add(new BasicNameValuePair("pickupLat", from.lat.toString()));
-            formparams.add(new BasicNameValuePair("pickupLon", from.lng.toString()));
-            formparams.add(new BasicNameValuePair("dropoffLat", to.lat.toString()));
-            formparams.add(new BasicNameValuePair("dropoffLon", to.lng.toString()));
+            formparams.add(new BasicNameValuePair("pickupLat", fromLat.toString()));
+            formparams.add(new BasicNameValuePair("pickupLon", fromLng.toString()));
+            formparams.add(new BasicNameValuePair("dropoffLat", toLat.toString()));
+            formparams.add(new BasicNameValuePair("dropoffLon", toLng.toString()));
             formparams.add(new BasicNameValuePair("passengers", "1"));
 
             httpPost.setEntity(new UrlEncodedFormEntity(formparams));
 
             CloseableHttpResponse response = client.execute(httpPost);
             Gson g = new Gson();
-            Map a = g.fromJson(EntityUtils.toString(response.getEntity()), Map.class);
 
-            client.close();
+            return g.fromJson(EntityUtils.toString(response.getEntity()), PODResponse.class);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

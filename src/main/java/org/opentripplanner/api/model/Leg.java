@@ -260,7 +260,15 @@ public class Leg {
     @JsonSerialize
     public Boolean rentedBike;
 
-    /**
+    @XmlAttribute
+    @JsonSerialize
+    public int maxPrice = 0;
+
+     @XmlAttribute
+     @JsonSerialize
+     public int minPrice = 0;
+
+     /**
      * Whether this leg is a transit leg or not.
      * @return Boolean true if the leg is a transit leg
      */

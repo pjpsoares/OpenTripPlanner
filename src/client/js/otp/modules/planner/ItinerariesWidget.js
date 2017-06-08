@@ -133,6 +133,19 @@ otp.widgets.ItinerariesWidget =
             .appendTo(this.itinsAccord)
             .append(this.renderItinerary(itin, i));
         }
+
+        // if (extraItineraries && extraItineraries.length) {
+        //     // For now we only support uber so no need for extra logic
+        //     var uberItinerary = extraItineraries[0];
+        //     var startTime = new Date();
+        //     startTime.setTime(startTime.getTime() + uberItinerary.estimateForPickup * 1000);
+        //
+        //     var endTime = new Date(startTime);
+        //     endTime.setTime(endTime.getTime() + uberItinerary.durationEstimate * 1000);
+        // }
+        // $('<h3>Uber: ' + startTime.toLocaleTimeString() + ' - ' + endTime.toLocaleTimeString() + '</h3>')
+        //     .appendTo(this.itinsAccord)
+
         this.activeIndex = parseInt(itinIndex) || 0;
 
         this.itinsAccord.accordion({
@@ -335,6 +348,7 @@ otp.widgets.ItinerariesWidget =
 
     // returns jQuery object
     renderItinerary : function(itin, index, alerts) {
+        console.log('bajoras render itinere ssss');
         var this_ = this;
 
         // render legs
@@ -419,15 +433,6 @@ otp.widgets.ItinerariesWidget =
             });
         }
 
-        //itinAccord.accordion({
-        /*console.log('#' + divId + ' > div')
-        $('#' + divId + ' > div').accordion({
-            header : 'h3',
-            active: false,
-            heightStyle: "content",
-            collapsible: true
-        });*/
-
         var itinDiv = $("<div></div>");
 
         // add alerts, if applicable
@@ -468,11 +473,11 @@ otp.widgets.ItinerariesWidget =
         // add trip summary
 
         var tripSummary = $('<div class="otp-itinTripSummary" />')
-        .append('<div class="otp-itinTripSummaryHeader">' + _tr("Trip Summary") + '</div>')
-        //TRANSLATORS: Travel: hour date on which this trip is made
-        .append('<div class="otp-itinTripSummaryLabel">' + _tr("Travel") + '</div><div class="otp-itinTripSummaryText">'+itin.getStartTimeStr()+'</div>')
-        //TRANSLATORS: Time: minutes How long is this trip
-        .append('<div class="otp-itinTripSummaryLabel">' + _tr("Time") + '</div><div class="otp-itinTripSummaryText">'+itin.getDurationStr()+'</div>');
+            .append('<div class="otp-itinTripSummaryHeader">' + _tr("Trip Summary") + '</div>')
+            //TRANSLATORS: Travel: hour date on which this trip is made
+            .append('<div class="otp-itinTripSummaryLabel">' + _tr("Travel") + '</div><div class="otp-itinTripSummaryText">'+itin.getStartTimeStr()+'</div>')
+            //TRANSLATORS: Time: minutes How long is this trip
+            .append('<div class="otp-itinTripSummaryLabel">' + _tr("Time") + '</div><div class="otp-itinTripSummaryText">'+itin.getDurationStr()+'</div>');
 
         var walkDistance = itin.getModeDistance("WALK");
         if(walkDistance > 0) {
@@ -621,46 +626,6 @@ otp.widgets.ItinerariesWidget =
                 this_.module.tripViewerWidget.update(leg);
                 this_.module.tripViewerWidget.bringToFront();
             });
-
-            // show the intermediate stops, if applicable -- REPLACED BY TRIP VIEWER
-
-            /*if(this.module.showIntermediateStops) {
-
-                $('<div class="otp-itin-leg-buffer"></div>').appendTo(legDiv);
-                var intStopsDiv = $('<div class="otp-itin-leg-intStops"></div>').appendTo(legDiv);
-
-                var intStopsListDiv = $('<div class="otp-itin-leg-intStopsList"></div>')
-
-                $('<div class="otp-itin-leg-intStopsHeader">'+leg.intermediateStops.length+' Intermediate Stops</div>')
-                .appendTo(intStopsDiv)
-                .click(function(event) {
-                    intStopsListDiv.toggle();
-                });
-
-                intStopsListDiv.appendTo(intStopsDiv);
-
-                for(var i=0; i < leg.intermediateStops.length; i++) {
-                    var stop = leg.intermediateStops[i];
-                    $('<div class="otp-itin-leg-intStopsListItem">'+(i+1)+'. '+stop.name+' (ID #'+stop.stopId.id+')</div>').
-                    appendTo(intStopsListDiv)
-                    .data("stop", stop)
-                    .click(function(evt) {
-                        var stop = $(this).data("stop");
-                        this_.module.webapp.map.lmap.panTo(new L.LatLng(stop.lat, stop.lon));
-                    }).hover(function(evt) {
-                        var stop = $(this).data("stop");
-                        $(this).css('color', 'red');
-                        var popup = L.popup()
-                            .setLatLng(new L.LatLng(stop.lat, stop.lon))
-                            .setContent(stop.name)
-                            .openOn(this_.module.webapp.map.lmap);
-                    }, function(evt) {
-                        $(this).css('color', 'black');
-                        this_.module.webapp.map.lmap.closePopup();
-                    });
-                }
-                intStopsListDiv.hide();
-            }*/
 
             // show the end time and stop
 
